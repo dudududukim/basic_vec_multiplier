@@ -20,7 +20,7 @@ module TOP_vec_mul #(
     parameter WORDSIZE_Result = 20*8
 
 ) (
-    input wire clk, rstn, start, we_rl,
+    input wire clk, rstn, start, weight_reload,
     output wire end_,
 
     // UB pins
@@ -86,5 +86,18 @@ module TOP_vec_mul #(
         .full(fifo_full)
     );
 
+    vec_mul_1x64 #(
+        .WEIGHT_BW(WEIGHT_BW),
+        .DATA_BW(DATA_BW),
+        .PARTIAL_SUM_BW(PARTIAL_SUM_BW),
+        .MATRIX_SIZE(MATRIX_SIZE)
+    ) vec_mul_1x64 (
+        .clk(clk),
+        .rstn(rstn),
+        .weight_reload(weight_reload),
+        .data_in(sram_data_out),
+        .weights(fifo_data_out),
+        .data_out(result)
+    );
     
 endmodule

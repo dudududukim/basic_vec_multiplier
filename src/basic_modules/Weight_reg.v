@@ -10,7 +10,7 @@ module weight_reg #(
 );
     always @(posedge clk or negedge rstn) begin
         if (!rstn)
-            weight <= 0;
+            weight_out <= 0;
         else if (weight_reload)
             weight_out <= weight_in;
     end

@@ -67,7 +67,7 @@ module tb_TOP_vec_mul;
         .fifo_data_out(fifo_data_out),
         .fifo_empty(fifo_empty),
         .fifo_full(fifo_full),
-        .we_rl(we_rl),
+        .weight_reload(we_rl),
         .valid_address(valid_address),
         .addr_ctrl_en(addr_ctrl_en),
 
