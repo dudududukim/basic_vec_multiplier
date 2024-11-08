@@ -66,8 +66,8 @@ module TOP_vec_mul_synthesis #(
         .WORDSIZE(WORDSIZE_Result)
     ) SRAM_Results(
         .clk(clk),
-        .write_enable(count4[3]),
-        .address({7'b0,count4[2:0]}),
+        .write_enable(sram_write_enable),
+        .address(sram_address),
         .data_in(result),
         .data_out(sram_result_data_out)
     );
