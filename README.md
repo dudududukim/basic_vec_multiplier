@@ -15,3 +15,4 @@
 - **Python 기반 데이터 생성**: 입력 벡터 및 가중치 벡터 자동 생성 스크립트 제공
 
 이 프로젝트는 **종합설계 과목**의 일환으로, Xilinx FPGA에서 Vector Multiplier를 구현하고, Systolic Array와의 비교를 통해 성능을 분석하는 것을 목적으로 합니다.
+https://github.com/dudududukim/basic_systolic_array_HDL
