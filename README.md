@@ -16,3 +16,6 @@
 
 이 프로젝트는 **종합설계 과목**의 일환으로, Xilinx FPGA에서 Vector Multiplier를 구현하고, Systolic Array와의 비교를 통해 성능을 분석하는 것을 목적으로 합니다.
 https://github.com/dudududukim/basic_systolic_array_HDL
+
+#### Waveform Preview
+![alt text](image.png)
