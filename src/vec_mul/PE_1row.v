@@ -15,7 +15,7 @@ module PE_1row #(
     genvar i;
 
     generate
-        for (i = 0; i < MATRIX_SIZE; i = i + 1) begin : pe_row
+        for (i = 0; i < MATRIX_SIZE; i = i + 1) begin : pe_vec_array
             PE_vec #(
                 .WEIGHT_BW(WEIGHT_BW),
                 .DATA_BW(DATA_BW),
