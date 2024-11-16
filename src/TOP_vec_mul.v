@@ -68,7 +68,7 @@ module TOP_vec_mul #(
         .clk(clk),
         .write_enable(count4[3]),
         .address({7'b0,count4[2:0]}),
-        .data_in(result_sync_rev),
+        .data_in(result),
         .data_out(sram_result_data_out)
     );
 
