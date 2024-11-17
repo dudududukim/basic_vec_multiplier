@@ -20,8 +20,8 @@ module TOP_vec_mul_synthesis #(
     parameter WORDSIZE_Result = 20*8
 
 ) (
-    input wire clk, rstn, start, weight_reload,
-    output wire end_,
+    input wire clk, rstn, weight_reload,
+    // output wire end_,
 
     // UB pins
     input wire sram_write_enable,
@@ -38,7 +38,7 @@ module TOP_vec_mul_synthesis #(
     output wire fifo_full,
 
     //
-    input wire valid_address, addr_ctrl_en,
+    // input wire valid_address, addr_ctrl_en,
     // input wire [ADDRESSSIZE-1 : 0] sram_result_address,
     output wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] sram_result_data_out
 );
