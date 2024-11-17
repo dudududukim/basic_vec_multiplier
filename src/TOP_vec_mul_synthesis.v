@@ -43,6 +43,7 @@ module TOP_vec_mul_synthesis #(
     output wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] sram_result_data_out
 );
 
+    wire [WORDSIZE-1:0] sram_data_out;
     wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_out;
     wire signed [PARTIAL_SUM_BW*NUM_PE_ROWS-1:0] result;
     wire [3:0] count4;                  // for sensing the results timing
