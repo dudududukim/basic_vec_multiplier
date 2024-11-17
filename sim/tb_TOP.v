@@ -69,7 +69,6 @@ module tb_TOP_vec_mul;
         .fifo_full(fifo_full),
         .weight_reload(we_rl),
         .valid_address(valid_address),
-        .addr_ctrl_en(addr_ctrl_en),
 
         .sram_result_address(sram_results_Address),
         .sram_result_data_out(sram_result_data_out)
@@ -103,16 +102,12 @@ module tb_TOP_vec_mul;
         #30;
         // $readmemh("../../sim/vector_generator/hex/setup_result_hex.txt", sram_data_array);
         $readmemh("../../sim/vector_generator/hex/original_matrix_hex.txt", sram_data_array);
-        // $display("SRAM data loaded from original_matrix_hex.txt:");
-        // for (i = 0; i < 16; i = i + 1) begin
-        //     $display("sram_data_array[%0d] = %h", i, sram_data_array[i]);
-        // end
 
         // SRAM 초기화 신호
         sram_write_enable = 1;
 
         // Write data into SRAM
-        for (i = 0; i <= 7; i = i + 1) begin
+        for (i = 0; i < MATRIX_SIZE; i = i + 1) begin
             sram_data_in = sram_data_array[i];
             sram_address = i;
             #10;
@@ -120,13 +115,16 @@ module tb_TOP_vec_mul;
 
         // Disable SRAM write
         sram_write_enable = 0;
-        #15;
+        #5;
+        mul_start = 1;
+        #10;
         valid_address = 1;
-        for(i=0; i<=7; i=i+1) begin
+        for(i=0; i< MATRIX_SIZE; i=i+1) begin
             sram_address  = i;
             #10;
         end
-        sram_address = 100;         // invalid address number
+        sram_address = 500;         // invalid address number
+        
         valid_address = 0;
 
         sram_write_enable = 1;
@@ -164,7 +162,6 @@ module tb_TOP_vec_mul;
     initial begin
         // mul_Start TPU operation after SRAM and FIFO loading
         #115 
-        mul_start = 1;
         fifo_read_enable = 1;
         #10
         we_rl = 1;
@@ -172,16 +169,11 @@ module tb_TOP_vec_mul;
         #10
         we_rl = 0;
         fifo_read_enable = 0;
-
-
-        // Wait for TPU end signal
-        #500
-        $display("Simulation completed: End signal received.");
-        $finish;
     end
 
     // mat mul results check
     always @(posedge end_) begin
+        #20;
         end_detected <= 1'b1;
     end
 
@@ -190,13 +182,19 @@ module tb_TOP_vec_mul;
             sram_results_Address <= 0;
             end_detected <= 0;
         end else if (end_detected) begin
-            if (sram_result_data_out !== expected_results[sram_results_Address-2]) begin
-                // $display("Error: Mismatch at address %d. Expected: %h, Got: %h", 
-                //          sram_results_Address, expected_results[sram_results_Address], sram_result_data_out);
+            if (sram_result_data_out !== expected_results[sram_results_Address]) begin
+                $display("Error: Mismatch at address %d. Expected: %h, Got: %h", 
+                         sram_results_Address, expected_results[sram_results_Address], sram_result_data_out);
             end else begin
-                // $display("Match at address %d: %h", sram_results_Address, sram_result_data_out);
+                $display("Match at address %d: %h", sram_results_Address, sram_result_data_out);
             end
+
+            // end 조건 형성
             sram_results_Address <= sram_results_Address + 1;
+                if (sram_results_Address == 10'd7) begin // 여기서 'hFF는 종료하고 싶은 주소 값
+                $display("Simulation finished at address %d", sram_results_Address);
+                $finish;
+            end
         end
     end
 

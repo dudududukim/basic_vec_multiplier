@@ -38,17 +38,16 @@ module TOP_vec_mul #(
     output wire fifo_full,
 
     //
-    input wire valid_address, addr_ctrl_en,
+    input wire valid_address,
     input wire [ADDRESSSIZE-1 : 0] sram_result_address,
     output wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] sram_result_data_out
 );
 
     wire signed [PARTIAL_SUM_BW*NUM_PE_ROWS-1:0] result;
     wire [3:0] count4;                  // for sensing the results timing
-    wire [6*8 -1 : 0] w_addr;
-    wire [DATA_BW*MATRIX_SIZE -1 : 0] data_set;
     wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] result_sync, result_sync_rev;
     wire [4:0] state_count;             // checking the cycle
+    wire delayed_valid_address;
 
     SRAM_UnifiedBuffer #(
         .ADDRESSSIZE(ADDRESSSIZE),
@@ -61,21 +60,33 @@ module TOP_vec_mul #(
         .data_out(sram_data_out)
     );
 
+    valid_result valid_result_sense(
+        .valid_address(valid_address),
+        .valid_result(valid_result)
+    );
+
     SRAM_Results #(
         .ADDRESSSIZE(ADDRESSSIZE),
         .WORDSIZE(WORDSIZE_Result)
     ) SRAM_Results(
         .clk(clk),
-        .write_enable(valid_address),
+        .write_enable(delayed_valid_address),
         .address({7'b0,count4[2:0]}),
         .data_in(result),
         .data_out(sram_result_data_out)
     );
 
+    dff #(
+        .WIDTH(1)
+    ) valid_dff(
+        .clk(clk), .rstn(rstn),
+        .d(valid_address), .q(delayed_valid_address)
+    );
+
     counter_4bit_en counter_4bit(
         .clk(clk),
         .rstn(rstn),
-        .enable(valid_address),
+        .enable(valid_address|end_),
         .count(count4)
     );
 
@@ -107,4 +118,9 @@ module TOP_vec_mul #(
         .data_out(result)
     );
     
+    CTRL_state_machine state_machine(
+        .clk(clk), .rstn(rstn), .start(start),
+        .state_count(state_count), .end_signal(end_)
+    );
+
 endmodule
