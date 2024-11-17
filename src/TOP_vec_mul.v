@@ -66,10 +66,17 @@ module TOP_vec_mul #(
         .WORDSIZE(WORDSIZE_Result)
     ) SRAM_Results(
         .clk(clk),
-        .write_enable(count4[3]),
+        .write_enable(valid_address),
         .address({7'b0,count4[2:0]}),
         .data_in(result),
         .data_out(sram_result_data_out)
+    );
+
+    counter_4bit_en counter_4bit(
+        .clk(clk),
+        .rstn(rstn),
+        .enable(valid_address),
+        .count(count4)
     );
 
     Weight_FIFO #(

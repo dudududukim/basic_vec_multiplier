@@ -12,6 +12,7 @@ iverilog -o $output_file \
     ../../src/TOP_vec_mul.v \
     ../../src/controller/*.v \
     ../../src/vec_mul/*.v \
+    ../../src/counter/*.v \
 
 # Run the compiled simulation with vvp
 vvp $output_file
