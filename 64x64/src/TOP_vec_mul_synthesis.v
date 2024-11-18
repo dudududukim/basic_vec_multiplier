@@ -25,7 +25,7 @@ module TOP_vec_mul_synthesis #(
 
     // UB pins
     input wire sram_write_enable,
-    input wire [ADDRESSSIZE-1:0] sram_address,
+    // input wire [ADDRESSSIZE-1:0] sram_address,
     // input wire [WORDSIZE-1:0] sram_data_in,
     // output wire [WORDSIZE-1:0] sram_data_out,
 
@@ -44,6 +44,7 @@ module TOP_vec_mul_synthesis #(
     // output wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] sram_result_data_out
 );
 
+    wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] sram_result_data_out;
     wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_out;
     wire [WORDSIZE-1:0] sram_data_out;
     wire signed [PARTIAL_SUM_BW*NUM_PE_ROWS-1:0] result;
