@@ -1,5 +1,5 @@
 # Define directories
-set outputDir ../../output/Created_Data/vec_mul_project_8x8
+set outputDir ../../output/Created_Data/vec_mul_project_64x64
 set routingOutputDir $outputDir/routing
 
 # Create directories
