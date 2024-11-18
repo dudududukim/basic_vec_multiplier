@@ -10,14 +10,14 @@ TOP tpu module composition
 
 module TOP_vec_mul_synthesis #(
     parameter ADDRESSSIZE = 10,
-    parameter WORDSIZE = 8*8,
+    parameter WORDSIZE = 8*64,
     parameter WEIGHT_BW = 8,
     parameter FIFO_DEPTH = 4,
-    parameter NUM_PE_ROWS = 8,
-    parameter MATRIX_SIZE = 8,
-    parameter PARTIAL_SUM_BW = 20,
+    parameter NUM_PE_ROWS = 64,
+    parameter MATRIX_SIZE = 64,
+    parameter PARTIAL_SUM_BW = 24,
     parameter DATA_BW = 8,
-    parameter WORDSIZE_Result = 20*8
+    parameter WORDSIZE_Result = 24*64
 
 ) (
     input wire clk, rstn, start, weight_reload,
@@ -27,7 +27,7 @@ module TOP_vec_mul_synthesis #(
     input wire sram_write_enable,
     input wire [ADDRESSSIZE-1:0] sram_address,
     // input wire [WORDSIZE-1:0] sram_data_in,
-    output wire [WORDSIZE-1:0] sram_data_out,
+    // output wire [WORDSIZE-1:0] sram_data_out,
 
     // FIFO pins
     input wire fifo_write_enable,
@@ -45,10 +45,11 @@ module TOP_vec_mul_synthesis #(
 );
 
     wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_out;
-    wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] sram_result_data_out;
+    wire [WORDSIZE-1:0] sram_data_out;
     wire signed [PARTIAL_SUM_BW*NUM_PE_ROWS-1:0] result;
-    wire [3:0] count4;                  // for sensing the results timing
-    wire [4:0] state_count;             // checking the cycle
+    wire [6:0] count7;                  // for sensing the results timing (3->count4)
+    wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] result_sync, result_sync_rev;
+    wire [7:0] state_count;             // checking the cycle (3->5bit)
     wire delayed_valid_address;
 
     SRAM_UnifiedBuffer #(
@@ -73,7 +74,7 @@ module TOP_vec_mul_synthesis #(
     ) SRAM_Results(
         .clk(clk),
         .write_enable(delayed_valid_address),
-        .address({7'b0,count4[2:0]}),
+        .address({4'b0,count7[5:0]}),
         .data_in(result),
         .data_out(sram_result_data_out)
     );
@@ -93,16 +94,18 @@ module TOP_vec_mul_synthesis #(
         .d(valid_address), .q(delayed_valid_address)
     );
 
-    counter_4bit_en counter_4bit(
+    counter_8bit_en counter_4bit(
         .clk(clk),
         .rstn(rstn),
         .enable(valid_address|end_),
-        .count(count4)
+        .count(count7)
     );
 
     Weight_FIFO #(
         .WEIGHT_BW(WEIGHT_BW),
-        .FIFO_DEPTH(FIFO_DEPTH)
+        .FIFO_DEPTH(4),
+        .MATRIX_SIZE(MATRIX_SIZE),
+        .NUM_PE_ROWS(NUM_PE_ROWS)
     ) weight_fifo (
         .clk(clk),
         .rstn(rstn),
@@ -118,7 +121,8 @@ module TOP_vec_mul_synthesis #(
         .WEIGHT_BW(WEIGHT_BW),
         .DATA_BW(DATA_BW),
         .PARTIAL_SUM_BW(PARTIAL_SUM_BW),
-        .MATRIX_SIZE(MATRIX_SIZE)
+        .MATRIX_SIZE(MATRIX_SIZE),
+        .NUM_PE_ROWS(NUM_PE_ROWS)
     ) vec_mul_1x64 (
         .clk(clk),
         .rstn(rstn),
