@@ -3,13 +3,13 @@
 module tb_TOP_vec_mul;
 
     parameter ADDRESSSIZE = 10;
-    parameter WORDSIZE = 64;
+    parameter WORDSIZE = 8*64;
     parameter WEIGHT_BW = 8;
-    parameter NUM_PE_ROWS = 8;
-    parameter MATRIX_SIZE = 8;
+    parameter NUM_PE_ROWS = 64;
+    parameter MATRIX_SIZE = 64;
     parameter FIFO_DEPTH = 4;
     parameter DATA_WIDTH = WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE;       // FIFO 1 row size
-    parameter PARTIAL_SUM_BW = 20;
+    parameter PARTIAL_SUM_BW = 24;
 
     reg clk;
     reg rstn;
@@ -34,10 +34,10 @@ module tb_TOP_vec_mul;
     wire [DATA_WIDTH-1:0] fifo_data_out;
     wire fifo_empty;
     wire fifo_full;
-    reg [PARTIAL_SUM_BW*MATRIX_SIZE-1:0] expected_results [0:63];
+    reg [PARTIAL_SUM_BW*MATRIX_SIZE-1:0] expected_results [0:MATRIX_SIZE-1];
 
     // SRAM과 FIFO 데이터 파일 로드용
-    reg [WORDSIZE-1:0] sram_data_array [0:15];
+    reg [WORDSIZE-1:0] sram_data_array [0:MATRIX_SIZE-1];
     reg [DATA_WIDTH-1:0] fifo_data_array [0:FIFO_DEPTH-1];
     reg [ADDRESSSIZE-1:0] sram_results_Address;
     integer i, j;
@@ -191,7 +191,7 @@ module tb_TOP_vec_mul;
 
             // end 조건 형성
             sram_results_Address <= sram_results_Address + 1;
-                if (sram_results_Address == 10'd7) begin // 여기서 'hFF는 종료하고 싶은 주소 값
+                if (sram_results_Address == 10'd63) begin // 여기서 'hFF는 종료하고 싶은 주소 값
                 $display("Simulation finished at address %d", sram_results_Address);
                 $finish;
             end

@@ -108,7 +108,8 @@ module TOP_vec_mul #(
         .WEIGHT_BW(WEIGHT_BW),
         .DATA_BW(DATA_BW),
         .PARTIAL_SUM_BW(PARTIAL_SUM_BW),
-        .MATRIX_SIZE(MATRIX_SIZE)
+        .MATRIX_SIZE(MATRIX_SIZE),
+        .NUM_PE_ROWS(NUM_PE_ROWS)
     ) vec_mul_1x64 (
         .clk(clk),
         .rstn(rstn),

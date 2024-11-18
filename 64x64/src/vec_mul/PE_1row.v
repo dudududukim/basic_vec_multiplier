@@ -31,7 +31,7 @@ module PE_1row #(
         end
     endgenerate
 
-    adder_tree_8 #(
+    adder_tree #(
         .PARTIAL_SUM_BW(PARTIAL_SUM_BW),
         .PARTIAL_MUL_BW(PARTIAL_MUL_BW),
         .MATRIX_SIZE(MATRIX_SIZE)
