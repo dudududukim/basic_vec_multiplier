@@ -4,7 +4,7 @@ module adder_tree #(
     parameter MATRIX_SIZE = 8  // Default to 8
 ) (
     input wire signed [PARTIAL_MUL_BW*MATRIX_SIZE-1:0] data_in_flat,
-    output wire signed [PARTIAL_SUM_BW-1:0] final_sum
+    (* use_dsp = "yes" *) output wire signed [PARTIAL_SUM_BW-1:0] final_sum
 );
 
     // Unpack the flattened input into an array
