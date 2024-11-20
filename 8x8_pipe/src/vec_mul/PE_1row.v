@@ -31,7 +31,7 @@ module PE_1row #(
         end
     endgenerate
 
-    dff #(
+    (* DONT_TOUCH = "TRUE" *) dff #(
         .WIDTH(PARTIAL_MUL_BW*MATRIX_SIZE)
     ) partial_mul_dff(
         .clk(clk), .rstn(rstn),
