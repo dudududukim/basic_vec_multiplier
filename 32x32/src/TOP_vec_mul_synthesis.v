@@ -10,14 +10,14 @@ TOP tpu module composition
 
 module TOP_vec_mul_synthesis #(
     parameter ADDRESSSIZE = 10,
-    parameter WORDSIZE = 8*64,
+    parameter WORDSIZE = 8*32,
     parameter WEIGHT_BW = 8,
     parameter FIFO_DEPTH = 4,
-    parameter NUM_PE_ROWS = 64,
-    parameter MATRIX_SIZE = 64,
+    parameter NUM_PE_ROWS = 32,
+    parameter MATRIX_SIZE = 32,
     parameter PARTIAL_SUM_BW = 24,
     parameter DATA_BW = 8,
-    parameter WORDSIZE_Result = 24*64
+    parameter WORDSIZE_Result = 24*32
 
 ) (
     input wire clk, rstn, start, weight_reload,
@@ -34,8 +34,6 @@ module TOP_vec_mul_synthesis #(
     input wire fifo_read_enable,
     // input wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_in,
     // output wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_out,
-    output wire fifo_empty,
-    output wire fifo_full,
 
     //
     input wire valid_address,
@@ -48,9 +46,9 @@ module TOP_vec_mul_synthesis #(
     wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_out;
     wire [WORDSIZE-1:0] sram_data_out;
     wire signed [PARTIAL_SUM_BW*NUM_PE_ROWS-1:0] result;
-    wire [6:0] count7;                  // for sensing the results timing (3->count4)
+    wire [5:0] count6;                  // for sensing the results timing (3->count4)
     wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] result_sync, result_sync_rev;
-    wire [7:0] state_count;             // checking the cycle (3->5bit)
+    wire [6:0] state_count;             // checking the cycle (3->5bit)
     wire delayed_valid_address;
 
     SRAM_UnifiedBuffer #(
@@ -95,11 +93,11 @@ module TOP_vec_mul_synthesis #(
         .d(valid_address), .q(delayed_valid_address)
     );
 
-    counter_8bit_en counter_4bit(
+    counter_6bit_en counter_4bit(
         .clk(clk),
         .rstn(rstn),
         .enable(valid_address|end_),
-        .count(count7)
+        .count(count6)
     );
 
     Weight_FIFO #(
