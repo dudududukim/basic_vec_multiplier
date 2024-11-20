@@ -21,7 +21,4 @@ module SRAM
             mem_array[address] <= data_in;  
         end else begin
             data_out <= mem_array[address];
-        end
-    end
-
-endmodule
+     
