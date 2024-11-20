@@ -1,7 +1,7 @@
 #
 # STEP#1: define the output directory area.
 #
-set outputDir ../../output/Created_Data/vec_mul_project_64x64
+set outputDir ../../output/Created_Data/vec_mul_project_16x16
 file mkdir $outputDir
 create_project proj_1 $outputDir \
   -part xcu250-figd2104-2L-e -force
