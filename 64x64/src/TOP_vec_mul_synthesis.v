@@ -31,7 +31,8 @@ module TOP_vec_mul_synthesis #(
 
     // FIFO pins
     input wire fifo_write_enable,
-    input wire fifo_read_enable,
+    input wire [1:0] fifo_address,
+    // input wire fifo_read_enable,
     // input wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_in,
     // output wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_out,
 
@@ -100,16 +101,13 @@ module TOP_vec_mul_synthesis #(
         .count(count7)
     );
 
-    Weight_FIFO #(
-        .WEIGHT_BW(WEIGHT_BW),
-        .FIFO_DEPTH(4),
-        .MATRIX_SIZE(MATRIX_SIZE),
-        .NUM_PE_ROWS(NUM_PE_ROWS)
+    SRAM #(                 //fifo 포기하고 걍 sram으로 해보자
+        .ADDRESSSIZE(ADDRESSSIZE),
+        .WORDSIZE(WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE)
     ) weight_fifo (
         .clk(clk),
-        .rstn(rstn),
         .write_enable(fifo_write_enable),
-        .read_enable(fifo_read_enable),
+        .address(fifo_address),
         .data_in(),
         .data_out(fifo_data_out)
     );
