@@ -73,7 +73,7 @@ module TOP_vec_mul_synthesis #(
     ) SRAM_Results(
         .clk(clk),
         .write_enable(delayed_valid_address),
-        .address({4'b0,count7[5:0]}),
+        .address({4'b0,count6[5:0]}),
         .data_in(result),
         .data_out(sram_result_data_out)
     );
