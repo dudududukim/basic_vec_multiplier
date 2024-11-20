@@ -47,19 +47,21 @@ module adder_tree #(
     generate
         for (level = 1; level < LEVELS; level = level + 1) begin : higher_levels_gen
             if(level==1) begin : level1_gen
-                wire [PARTIAL_SUM_BW-1:0] dff_out, sum_out;
-                assign sum_out = 
-                        sum_levels[(level-1) * SUM_LEVEL_SIZE + 2*i] + 
-                        sum_levels[(level-1) * SUM_LEVEL_SIZE + 2*i+1];
+                for (i = 0; i < (MATRIX_SIZE >> (level + 1)); i = i + 1) begin : sum_gen
+                    wire [PARTIAL_SUM_BW-1:0] dff_out, sum_out;
+                    assign sum_out = 
+                            sum_levels[(level-1) * SUM_LEVEL_SIZE + 2*i] + 
+                            sum_levels[(level-1) * SUM_LEVEL_SIZE + 2*i+1];
 
-                (* DONT_TOUCH = "TRUE" *) dff #(
-                    .WIDTH(PARTIAL_SUM_BW)
-                ) adder_pipe_dff(
-                    .clk(clk), .rstn(rstn),
-                    .d(sum_out), .q(dff_out)
-                );
+                    (* DONT_TOUCH = "TRUE" *) dff #(
+                        .WIDTH(PARTIAL_SUM_BW)
+                    ) adder_pipe_dff(
+                        .clk(clk), .rstn(rstn),
+                        .d(sum_out), .q(dff_out)
+                    );
 
-                assign sum_levels[level * SUM_LEVEL_SIZE + i] = dff_out;
+                    assign sum_levels[level * SUM_LEVEL_SIZE + i] = dff_out;
+                end
             end
             else begin : other_levels_gen
                 for (i = 0; i < (MATRIX_SIZE >> (level + 1)); i = i + 1) begin : sum_gen
