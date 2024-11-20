@@ -36,7 +36,7 @@ module PE_1row #(
     ) partial_mul_dff(
         .clk(clk), .rstn(rstn),
         .d(mul_out_tmp), .q(q_mul_out_tmp)
-    )
+    );
 
     adder_tree #(
         .PARTIAL_SUM_BW(PARTIAL_SUM_BW),
