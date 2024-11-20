@@ -1,7 +1,7 @@
 // Unified Buffer to store internal results or data inputs
 // Datapath width = 8B
 
-module SRAM
+module SRAM_Results
 #(
     parameter ADDRESSSIZE = 10,                // temp size (a hundred 8*8byte array can be stored)
     parameter WORDSIZE    = 8 * 20
@@ -21,4 +21,7 @@ module SRAM
             mem_array[address] <= data_in;  
         end else begin
             data_out <= mem_array[address];
-     
+        end
+    end
+
+endmodule
