@@ -43,6 +43,7 @@ module PE_1row #(
         .PARTIAL_MUL_BW(PARTIAL_MUL_BW),
         .MATRIX_SIZE(MATRIX_SIZE)
     ) adder_tree_inst (
+        .clk(clk), .rstn(rstn),
         .data_in_flat(q_mul_out_tmp),
         .final_sum(data_out)
     );

@@ -3,6 +3,7 @@ module adder_tree #(
     parameter PARTIAL_MUL_BW = 16,
     parameter MATRIX_SIZE = 8  // Default to 8
 ) (
+    input wire clk, rstn,
     input wire signed [PARTIAL_MUL_BW*MATRIX_SIZE-1:0] data_in_flat,
     (* use_dsp = "yes" *) output wire signed [PARTIAL_SUM_BW-1:0] final_sum
 );
