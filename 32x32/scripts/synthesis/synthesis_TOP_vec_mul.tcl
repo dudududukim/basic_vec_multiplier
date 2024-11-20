@@ -20,6 +20,8 @@ add_files -norecurse ../../src/TOP_vec_mul_synthesis.v
 set_property top TOP_vec_mul_synthesis [current_fileset]
 update_compile_order -fileset sources_1
 
+add_files -fileset constrs_1 -norecurse /home/dh/DUHYEON/basic_vec_multiplier/32x32/scripts/synthesis/constraints.xdc
+
 #
 # STEP#3: run synthesis and the default utilization report.
 #
