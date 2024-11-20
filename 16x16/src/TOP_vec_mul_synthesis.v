@@ -93,11 +93,11 @@ module TOP_vec_mul_synthesis #(
         .d(valid_address), .q(delayed_valid_address)
     );
 
-    counter_8bit_en counter_4bit(
+    counter_5bit_en counter_5bit(
         .clk(clk),
         .rstn(rstn),
         .enable(valid_address|end_),
-        .count(count7)
+        .count(count5)
     );
 
     Weight_FIFO #(
