@@ -14,14 +14,11 @@ module SRAM_Results
     output reg [WORDSIZE-1:0] data_out      
 );
 
-    reg [WORDSIZE-1:0] mem_array [0:(1 << ADDRESSSIZE)-1];
+    (* ram_style = "block" *) reg [WORDSIZE-1:0] mem_array [0:(1 << ADDRESSSIZE)-1];
 
     always @(posedge clk) begin
         if (write_enable) begin
             mem_array[address] <= data_in;  
         end else begin
             data_out <= mem_array[address];
-        end
-    end
-
-endmodule
+     
