@@ -3,10 +3,10 @@
 module tb_TOP_vec_mul;
 
     parameter ADDRESSSIZE = 10;
-    parameter WORDSIZE = 8*64;
+    parameter WORDSIZE = 8*16;
     parameter WEIGHT_BW = 8;
-    parameter NUM_PE_ROWS = 64;
-    parameter MATRIX_SIZE = 64;
+    parameter NUM_PE_ROWS = 16;
+    parameter MATRIX_SIZE = 16;
     parameter FIFO_DEPTH = 4;
     parameter DATA_WIDTH = WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE;       // FIFO 1 row size
     parameter PARTIAL_SUM_BW = 24;
@@ -70,8 +70,6 @@ module tb_TOP_vec_mul;
         .fifo_read_enable(fifo_read_enable),
         .fifo_data_in(fifo_data_in),
         .fifo_data_out(fifo_data_out),
-        .fifo_empty(fifo_empty),
-        .fifo_full(fifo_full),
         .weight_reload(we_rl),
         .valid_address(valid_address),
 
@@ -196,7 +194,7 @@ module tb_TOP_vec_mul;
 
             // end 조건 형성
             sram_results_Address <= sram_results_Address + 1;
-                if (sram_results_Address == 10'd63) begin // 여기서 'hFF는 종료하고 싶은 주소 값
+                if (sram_results_Address == 10'd15) begin // 여기서 'hFF는 종료하고 싶은 주소 값
                 $display("Simulation finished at address %d", sram_results_Address);
                 $finish;
             end

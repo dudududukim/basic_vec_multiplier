@@ -33,7 +33,7 @@ module TOP_vec_mul #(
     input wire fifo_write_enable,
     input wire fifo_read_enable,
     input wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_in,
-    output wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_out
+    output wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_out,
 
     //
     input wire valid_address,
@@ -42,9 +42,9 @@ module TOP_vec_mul #(
 );
 
     wire signed [PARTIAL_SUM_BW*NUM_PE_ROWS-1:0] result;
-    wire [6:0] count7;                  // for sensing the results timing (3->count4)
+    wire [4:0] count5;                  // 6 -> 7
     wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] result_sync, result_sync_rev;
-    wire [7:0] state_count;             // checking the cycle (3->5bit)
+    wire [5:0] state_count;             // checking the cycle (3->5bit)
     wire delayed_valid_address;
 
     SRAM_UnifiedBuffer #(
@@ -69,7 +69,7 @@ module TOP_vec_mul #(
     ) SRAM_Results(
         .clk(clk),
         .write_enable(delayed_valid_address),
-        .address({4'b0,count7[5:0]}),
+        .address({6'b0,count5[3:0]}),
         .data_in(result),
         .data_out(sram_result_data_out)
     );
@@ -81,11 +81,11 @@ module TOP_vec_mul #(
         .d(valid_address), .q(delayed_valid_address)
     );
 
-    counter_8bit_en counter_4bit(
+    counter_5bit_en counter_5bit(
         .clk(clk),
         .rstn(rstn),
         .enable(valid_address|end_),
-        .count(count7)
+        .count(count5)
     );
 
     Weight_FIFO #(

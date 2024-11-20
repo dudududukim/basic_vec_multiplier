@@ -8,7 +8,7 @@ TOP tpu module composition
 
 */
 
-module TOP_vec_mul #(
+module TOP_vec_mul_synthesis #(
     parameter ADDRESSSIZE = 10,
     parameter WORDSIZE = 8*64,
     parameter WEIGHT_BW = 8,
@@ -27,20 +27,24 @@ module TOP_vec_mul #(
     input wire sram_write_enable,
     input wire [ADDRESSSIZE-1:0] sram_address,
     input wire [WORDSIZE-1:0] sram_data_in,
-    output wire [WORDSIZE-1:0] sram_data_out,
+    // output wire [WORDSIZE-1:0] sram_data_out,
 
     // FIFO pins
     input wire fifo_write_enable,
     input wire fifo_read_enable,
-    input wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_in,
-    output wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_out
+    // input wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_in,
+    // output wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_out,
 
     //
     input wire valid_address,
-    input wire [ADDRESSSIZE-1 : 0] sram_result_address,
-    output wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] sram_result_data_out
+    // input wire [ADDRESSSIZE-1 : 0] sram_result_address,
+    output wire done
+    // output wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] sram_result_data_out
 );
 
+    wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] sram_result_data_out;
+    wire [WEIGHT_BW * NUM_PE_ROWS * MATRIX_SIZE - 1:0] fifo_data_out;
+    wire [WORDSIZE-1:0] sram_data_out;
     wire signed [PARTIAL_SUM_BW*NUM_PE_ROWS-1:0] result;
     wire [6:0] count7;                  // for sensing the results timing (3->count4)
     wire [PARTIAL_SUM_BW*MATRIX_SIZE-1 : 0] result_sync, result_sync_rev;
@@ -74,6 +78,14 @@ module TOP_vec_mul #(
         .data_out(sram_result_data_out)
     );
 
+    temp_end #(
+        .MATRIX_SIZE(MATRIX_SIZE),
+        .PARTIAL_SUM_BW(PARTIAL_SUM_BW)
+    ) result_done(
+        .din(sram_result_data_out),
+        .dout(done)
+    );
+
     dff #(
         .WIDTH(1)
     ) valid_dff(
@@ -98,7 +110,7 @@ module TOP_vec_mul #(
         .rstn(rstn),
         .write_enable(fifo_write_enable),
         .read_enable(fifo_read_enable),
-        .data_in(fifo_data_in),
+        .data_in(),
         .data_out(fifo_data_out)
     );
 
