@@ -16,7 +16,7 @@ module PE_vec #(
 );
     wire signed [WEIGHT_BW-1 : 0] PE_weight;
 
-    weight_reg #(
+    (* DONT_TOUCH = "TRUE" *) weight_reg #(
         .WEIGHT_BW(WEIGHT_BW)
     ) weight_register (
         .clk(clk), .rstn(rstn), .weight_reload(weight_reload),
